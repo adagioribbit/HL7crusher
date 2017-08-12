@@ -10,23 +10,23 @@ net.createServer(function (socket) {
   // Réponse du serveur aux paquets reçus
   socket.on('data', function (data) {
     let datum = data;
-    
+    console.log(datum);
     // TODO : Envoyer une réponse ACK au client
     // this.write(ACKresponse);
     
     msgParser.parseBuffer(datum, function(msgTable){
-      let nbMessage = msgTable.length;
-      for(let i=0; i<nbMessage; i++){
+      for(let i=0; i<msgTable.length; i++){
 	segmentParser.parseMessage(msgTable[i], function(segmentTable){
-	  let nbSegment = segmentTable.length;
-	  for(let j=0; j<nbSegment; j++){
-	    console.log(segmentTable[j].toString());
+	  for(let j=0; j<segmentTable.length; j++){
+	    console.log("Segment #" + j + " :\n");
+	    fieldParser.parseSegment(segmentTable[j], function(fieldTable){
+	      for(let k=0; k<fieldTable.length; k++){
+		if(k==1) console.log(fieldTable[k]);
+		console.log("      " + (k+1) + " = ", fieldTable[k].toString());
+	      }
+	    });
 	  }
-// 	  for(let j=0; j<nbSegment; j++){
-// 	    fieldParser.parseSegment(segmentTable[j]);
-// 	  }
 	  socket.write(segmentTable.toString());
-// 	console.log("Segment Table : \n", sgmntTable);
 	});
       }
     });
