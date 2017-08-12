@@ -14,15 +14,17 @@ net.createServer(function (socket) {
     // TODO : Envoyer une réponse ACK au client
     // this.write(ACKresponse);
     
-    msgParser.parseBuffer(datum.toString('ascii'), function(msgTable){
+    msgParser.parseBuffer(datum, function(msgTable){
       let nbMessage = msgTable.length;
-      //console.log(msgTable);
       for(let i=0; i<nbMessage; i++){
 	segmentParser.parseMessage(msgTable[i], function(segmentTable){
 	  let nbSegment = segmentTable.length;
 	  for(let j=0; j<nbSegment; j++){
-	    fieldParser.parseSegment(segmentTable[j]);
+	    console.log(segmentTable[j].toString());
 	  }
+// 	  for(let j=0; j<nbSegment; j++){
+// 	    fieldParser.parseSegment(segmentTable[j]);
+// 	  }
 	  socket.write(segmentTable.toString());
 // 	console.log("Segment Table : \n", sgmntTable);
 	});
